@@ -25,4 +25,14 @@ public class TmdbService : ITmdbService // : ITmdbService → interface'i uygulu
 
         return result ?? new MoviePageDto();
     }
+
+    public async Task<ActorPageDto> GetPopularActorsAsync (int page)
+    {
+        var apiKey = _configuration["Tmdb:ApiKey"]; // Tmdb bölümündeki ApiKey'i getir
+        var url = $"person/popular?api_key={apiKey}&page={page}&language=tr-TR"; // TMDB'ye atacağımız isteğin adresi
+
+        var result = await _httpClient.GetFromJsonAsync<ActorPageDto>(url); // şu URL'e GET isteği at, dönen JSON'u otomatik olarak 
+
+        return result ?? new ActorPageDto();
+    }
 }

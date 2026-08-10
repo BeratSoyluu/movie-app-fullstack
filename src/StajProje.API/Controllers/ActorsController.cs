@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StajProje.Application.Features.Movies.Queries.GetPopularMovies;
+using StajProje.Application.Features.Actors.Queries.GetPopularActors;
 
 namespace StajProje.API.Controllers;
 
@@ -9,19 +9,19 @@ namespace StajProje.API.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 
-public class MoviesController : ControllerBase
+public class ActorsController : ControllerBase
 {
     private readonly ISender _sender;
 
-    public MoviesController (ISender sender)
+    public ActorsController(ISender sender)
     {
         _sender = sender;
     }
 
     [HttpGet("popular")]
-    public async Task<IActionResult> GetPopularMovies([FromQuery] int page = 1)
+    public async Task<IActionResult> GetPopularActors([FromQuery] int page = 1)
     {
-        var query = new GetPopularMoviesQuery { Page = page };
+        var query = new GetPopularActorsQuery {Page = page};
         var result = await _sender.Send(query);
         return Ok(result);
     }
