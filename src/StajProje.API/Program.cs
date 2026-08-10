@@ -8,6 +8,7 @@ using StajProje.Infrastructure.Authentication;
 using StajProje.Infrastructure.Persistence;
 using StajProje.Infrastructure.Persistence.Repositories;
 using FluentValidation;
+using StajProje.Infrastructure.Tmdb;
 
 var builder = WebApplication.CreateBuilder(args); //? Uygulamayı kuran ana yapı
 
@@ -24,6 +25,11 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<ISuggestionRepository, SuggestionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
+builder.Services.AddHttpClient<ITmdbService, TmdbService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Tmdb:BaseUrl"]!);
+});
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(StajProje.Application.Interfaces.IUserRepository).Assembly));
