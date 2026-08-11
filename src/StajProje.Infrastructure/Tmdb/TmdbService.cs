@@ -35,4 +35,14 @@ public class TmdbService : ITmdbService // : ITmdbService → interface'i uygulu
 
         return result ?? new ActorPageDto();
     }
+
+    public async Task<MovieDto> GetMovieByIdAsync(int movieId)
+    {
+        var apiKey = _configuration["Tmdb:ApiKey"];
+        var url = $"movie/{movieId}?api_key={apiKey}&language=tr-TR";
+
+        var result = await _httpClient.GetFromJsonAsync<MovieDto>(url);
+
+        return result ?? new MovieDto();
+    }
 }

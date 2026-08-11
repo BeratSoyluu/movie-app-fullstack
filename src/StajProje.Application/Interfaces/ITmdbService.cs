@@ -9,4 +9,5 @@ public interface ITmdbService
 {
     Task<MoviePageDto> GetPopularMoviesAsync(int page);
     Task<ActorPageDto> GetPopularActorsAsync(int page);
+    Task<MovieDto> GetMovieByIdAsync(int movieId);
 }

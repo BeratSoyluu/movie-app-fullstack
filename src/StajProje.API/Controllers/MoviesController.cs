@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StajProje.Application.Features.Movies.Queries.GetMovieById;
 using StajProje.Application.Features.Movies.Queries.GetPopularMovies;
 
 namespace StajProje.API.Controllers;
@@ -22,6 +24,16 @@ public class MoviesController : ControllerBase
     public async Task<IActionResult> GetPopularMovies([FromQuery] int page = 1)
     {
         var query = new GetPopularMoviesQuery { Page = page };
+        var result = await _sender.Send(query);
+        return Ok(result);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetMovieById(int id)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        var query = new GetMovieByIdQuery { MovieId = id, UserId = userId };
         var result = await _sender.Send(query);
         return Ok(result);
     }
