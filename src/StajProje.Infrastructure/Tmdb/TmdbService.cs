@@ -16,24 +16,64 @@ public class TmdbService : ITmdbService // : ITmdbService → interface'i uygulu
         _configuration = configuration;
     }
 
+    private const int MaxItems = 100;
+
     public async Task<MoviePageDto> GetPopularMoviesAsync(int page)
     {
-        var apiKey = _configuration["Tmdb:ApiKey"]; // Tmdb bölümündeki ApiKey'i getir
-        var url = $"movie/popular?api_key={apiKey}&page={page}&language=tr-TR"; // TMDB'ye atacağımız isteğin adresi
+        var apiKey = _configuration["Tmdb:ApiKey"];
+        var allMovies = new List<MovieDto>();
+        int currentPage = 1;
 
-        var result = await _httpClient.GetFromJsonAsync<MoviePageDto>(url); // şu URL'e GET isteği at, dönen JSON'u otomatik olarak MoviePageDto'ya çevir.
+        while (allMovies.Count < MaxItems)
+        {
+            var url = $"movie/popular?api_key={apiKey}&page={currentPage}&language=tr-TR";
+            var pageResult = await _httpClient.GetFromJsonAsync<MoviePageDto>(url);
 
-        return result ?? new MoviePageDto();
+            if (pageResult is null || pageResult.Results.Count == 0)
+                break;
+
+            allMovies.AddRange(pageResult.Results);
+            currentPage++;
+
+            if (currentPage > pageResult.TotalPages)
+                break;
+        }
+
+        return new MoviePageDto
+        {
+            Page = 1,
+            Results = allMovies.Take(MaxItems).ToList(),
+            TotalPages = 1
+        };
     }
 
-    public async Task<ActorPageDto> GetPopularActorsAsync (int page)
+    public async Task<ActorPageDto> GetPopularActorsAsync(int page)
     {
-        var apiKey = _configuration["Tmdb:ApiKey"]; // Tmdb bölümündeki ApiKey'i getir
-        var url = $"person/popular?api_key={apiKey}&page={page}&language=tr-TR"; // TMDB'ye atacağımız isteğin adresi
+        var apiKey = _configuration["Tmdb:ApiKey"];
+        var allActors = new List<ActorDto>();
+        int currentPage = 1;
 
-        var result = await _httpClient.GetFromJsonAsync<ActorPageDto>(url); // şu URL'e GET isteği at, dönen JSON'u otomatik olarak 
+        while (allActors.Count < MaxItems)
+        {
+            var url = $"person/popular?api_key={apiKey}&page={currentPage}&language=tr-TR";
+            var pageResult = await _httpClient.GetFromJsonAsync<ActorPageDto>(url);
 
-        return result ?? new ActorPageDto();
+            if (pageResult is null || pageResult.Results.Count == 0)
+                break;
+
+            allActors.AddRange(pageResult.Results);
+            currentPage++;
+
+            if (currentPage > pageResult.TotalPages)
+                break;
+        }
+
+        return new ActorPageDto
+        {
+            Page = 1,
+            Results = allActors.Take(MaxItems).ToList(),
+            TotalPages = 1
+        };
     }
 
     public async Task<MovieDto> GetMovieByIdAsync(int movieId)
@@ -44,5 +84,23 @@ public class TmdbService : ITmdbService // : ITmdbService → interface'i uygulu
         var result = await _httpClient.GetFromJsonAsync<MovieDto>(url);
 
         return result ?? new MovieDto();
+    }
+
+    public async Task<MoviePageDto> SearchMoviesAsync(string query)
+    {
+        var apiKey = _configuration["Tmdb:ApiKey"];
+        var url = $"search/movie?api_key={apiKey}&query={query}&language=tr-TR";
+        var result = await _httpClient.GetFromJsonAsync<MoviePageDto>(url);
+        
+        return result ?? new MoviePageDto();
+    }
+
+    public async Task<ActorPageDto> SearchActorsAsync(string query)
+    {
+        var apiKey = _configuration["Tmdb:ApiKey"];
+        var url = $"search/person?api_key={apiKey}&query={query}&language=tr-TR";
+        var result = await _httpClient.GetFromJsonAsync<ActorPageDto>(url);
+        
+        return result ?? new ActorPageDto();
     }
 }

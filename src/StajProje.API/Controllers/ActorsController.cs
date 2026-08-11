@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StajProje.Application.Features.Actors.Queries.GetPopularActors;
+using StajProje.Application.Features.Actors.Queries.SearchActors;
 
 namespace StajProje.API.Controllers;
 
@@ -24,5 +25,13 @@ public class ActorsController : ControllerBase
         var query = new GetPopularActorsQuery {Page = page};
         var result = await _sender.Send(query);
         return Ok(result);
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchActors([FromQuery] string query)
+    {
+        var q = new SearchActorsQuery { Query = query };
+        var result = await _sender.Send(q);
+        return Ok(result); 
     }
 }
