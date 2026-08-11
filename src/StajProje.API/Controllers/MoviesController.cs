@@ -9,7 +9,7 @@ namespace StajProje.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = "Movie,Admin")]
 
 public class MoviesController : ControllerBase
 {

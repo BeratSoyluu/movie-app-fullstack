@@ -7,7 +7,7 @@ namespace StajProje.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = "Actor,Admin")]
 
 public class ActorsController : ControllerBase
 {
