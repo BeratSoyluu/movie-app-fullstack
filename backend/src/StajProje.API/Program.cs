@@ -43,6 +43,16 @@ builder.Services.AddTransient(
 
 builder.Services.AddControllers(); //? Controller desteği
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -102,6 +112,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection(); //? HTTP'yi HTTPS'e yönlendirir
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication(); //? Token'ı kontrol eder (kim bu kullanıcı?)
 app.UseAuthorization();  //? Yetki kontrolü (bu kullanıcı bunu yapabilir mi?)

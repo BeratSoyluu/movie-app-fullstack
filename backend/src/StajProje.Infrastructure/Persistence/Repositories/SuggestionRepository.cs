@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using StajProje.Application.Interfaces;
 using StajProje.Domain.Entities;
 using StajProje.Infrastructure.Persistence;
@@ -18,5 +19,13 @@ public class SuggestionRepository : ISuggestionRepository
         _context.Suggestions.Add(suggestion);
         await _context.SaveChangesAsync();
         return suggestion.Id;
+    }
+
+    public async Task<List<Suggestion>> GetByUserIdAsync(int userId)
+    {
+        return await _context.Suggestions
+            .Where(s => s.SuggestedByUserId == userId)
+            .OrderByDescending(s => s.CreatedAt)
+            .ToListAsync();
     }
 }

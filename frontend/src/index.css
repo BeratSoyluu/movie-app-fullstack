@@ -1,0 +1,34 @@
+:root {
+  --bg-dark: #0f1419;
+  --bg-card: #1a1f2e;
+  --bg-card-hover: #232a3d;
+  --gold: #f5c518;
+  --gold-soft: #e0b30f;
+  --text-light: #f5f5f5;
+  --text-muted: #9ca3af;
+  --border: #2a3142;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+/* Kaydırma çubuğu da temaya uysun */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 5px;
+}

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StajProje.Application.Features.Suggestions.Commands.CreateSuggestion;
+using StajProje.Application.Features.Suggestions.Queries.GetMySuggestions;
 
 namespace StajProje.API.Controllers;
 
@@ -19,13 +20,12 @@ public class SuggestionsController : ControllerBase
         _sender = sender;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateSuggestion(CreateSuggestionCommand command)
+    [HttpGet("mine")]
+    public async Task<IActionResult> GetMySuggestions()
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        command.SuggestedByUserId = userId;
-
-        var suggestionId = await _sender.Send(command);
-        return Ok(suggestionId);
+        var query = new GetMySuggestionsQuery { UserId = userId };
+        var result = await _sender.Send(query);
+        return Ok(result);
     }
 }
