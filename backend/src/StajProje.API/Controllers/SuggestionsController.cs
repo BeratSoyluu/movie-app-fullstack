@@ -20,6 +20,15 @@ public class SuggestionsController : ControllerBase
         _sender = sender;
     }
 
+    [HttpPost]
+    public async Task<IActionResult> CreateSuggestion(CreateSuggestionCommand command)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        command.SuggestedByUserId = userId;
+        var suggestionId = await _sender.Send(command);
+        return Ok(suggestionId);
+    }
+
     [HttpGet("mine")]
     public async Task<IActionResult> GetMySuggestions()
     {
